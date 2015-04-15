@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flapper News</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+</head>
+<body ng-app="flapperNews" ng-controller="MainController as mainCtrl">
+
+	<ul>
+		<li ng-repeat="post in mainCtrl.posts | orderBy: '-upvotes' ">
+			{{post.title}} - upvotes: {{post.upvotes}}
+		</li>
+	</ul>
+
+	<form ng-submit="mainCtrl.addPost(mainCtrl.title)">
+		<input type="text", ng-model="mainCtrl.title">
+		<button type="submit"></button>
+	</form>
+
+
+</body>
+</html>
