@@ -19,8 +19,12 @@
 				<h1>Flapper News</h1>
 			</div>
 
-			<ul>
-				<li class="panel panel-default" ng-repeat="post in mainCtrl.posts" ng-style="{'bottom': mainCtrl.posts.indexOf(post)*70 + 'px'}">
+			<ul ng-style="{'height': mainCtrl.posts.length*70 + 'px'}">
+				<li class="panel panel-default" ng-repeat="post in mainCtrl.posts" ng-style="{'top':
+				(mainCtrl.posts.length - 1 - mainCtrl.posts.indexOf(post) ) * 70 + 'px'}" class="{{post.upvotes}}">
+
+			
+
 					<div class="panel-body">
 						<span class="glyphicon glyphicon-thumbs-up" ng-click="mainCtrl.incrementUpvotes(post, $index)"></span>
 						{{post.upvotes}}

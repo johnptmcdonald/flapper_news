@@ -9,14 +9,15 @@ angular
 		self.orderByUpvotes = orderByUpvotes;
 
 		self.posts = [
-			{title: "post 1", upvotes: 0, link: ""},
-			{title: "post 2", upvotes: 2, link: ""},
-			{title: "post 3", upvotes: 3, link: ""},
-			{title: "post 4", upvotes: 4, link: ""},
-			{title: "post 5", upvotes: 5, link: ""},
-			{title: "post 6", upvotes: 8, link: ""},
-			{title: "post 7", upvotes: 8, link: ""},
-			{title: "post 8", upvotes: 10, link: ""}
+			{title: "post1", upvotes: 0, link: ""},
+			{title: "post2", upvotes: 2, link: ""},
+			{title: "post3", upvotes: 3, link: ""},
+			{title: "post4", upvotes: 4, link: ""},
+			{title: "post5", upvotes: 5, link: ""},
+			{title: "post6", upvotes: 8, link: ""},
+			{title: "post7", upvotes: 8, link: ""},
+			{title: "post8", upvotes: 10, link: ""}
+			
 		];
 
 		function addPost(post){
@@ -32,17 +33,13 @@ angular
 		function incrementUpvotes(post, index){
 			post.upvotes++;
 			self.orderByUpvotes();
-			
-
 		}
-
 
 
 		function orderByUpvotes(){
 			self.posts = self.posts.sort(function(obj1, obj2) {
 				return obj1.upvotes - obj2.upvotes;
 			});
-			console.log(self.posts);
 		}
 		
 
