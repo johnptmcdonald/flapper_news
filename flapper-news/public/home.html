@@ -11,8 +11,10 @@
 
 						<div class="panel-body">
 							<span class="glyphicon glyphicon-thumbs-up" ng-click="mainCtrl.incrementUpvotes(post, $index)"></span>
-							{{post.upvotes}}
-							<a ng-if="post.link" href="{{post.link}}">
+							<span ng-if="post.upvotes">{{post.upvotes}}</span>
+							<span ng-if="!post.upvotes">0</span>
+
+							<a ng-show="post.link" href="{{post.link}}">
 								{{post.title}}
 							</a>
 							<span ng-if="!post.link">
@@ -30,5 +32,9 @@
 					<div class="form-group">
 						<input class="form-control" type="text" placeholder="Link" ng-model="mainCtrl.post.link">
 					</div>
+
 					<button class="btn btn-primary" type="submit">Submit</button>
-				</form>			
+				</form>		
+
+
+

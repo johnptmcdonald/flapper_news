@@ -1,11 +1,11 @@
 angular
 	.module("flapperNews", ["ngAnimate", "ui.router"])
-	.factory('postsFactory', postsFactory)
+	.service('postsService', postsService)
 	.controller("MainController", mainController)
 	.controller("PostsController", postsController)
 	.config(routeFunction)
 
-
+// ***********  CONFIG FOR UI-ROUTER **************************
 	routeFunction.$inject = ['$stateProvider','$urlRouterProvider'];
 	function routeFunction($stateProvider, $urlRouterProvider){
 		$stateProvider
@@ -23,27 +23,32 @@ angular
 		$urlRouterProvider.otherwise('home');
 	}
 
-	mainController.$inject = ['postsFactory'];
-	function mainController(postsFactory){
+// ***********  MAIN CONTROLLER ******************************
+	mainController.$inject = ['postsService'];
+
+	function mainController(postsService){
 		console.log('mainController is loading');
 		var self = this;
 		self.addPost = addPost;
 		self.incrementUpvotes = incrementUpvotes;
 		self.orderByUpvotes = orderByUpvotes;
+		
+		postsService.getPosts()
+			.then(function(data){
+				self.posts = data
+			})
 
-		self.posts = postsFactory.posts;
-		console.log(postsFactory);
 
 		function addPost(post){
-			console.log(post)
-
 			if(post && post.title){
 				console.log("addingPost")
-				self.posts.unshift({title: post.title, upvotes: 0, link: post.link, comments: [
-				    {author: 'Joe', body: 'Cool post!', upvotes: 0},
-				    {author: 'Bob', body: 'Great idea but everything is wrong!', upvotes: 0}
-				  ]});
-				console.log(self.posts[0]);
+				console.log(post)
+				post.upvotes = 0;
+				postsService.createPost(post)
+					.then(function(){
+					self.posts.unshift(post);
+				})
+
 				self.post = null;			
 			}
 		}
@@ -61,13 +66,17 @@ angular
 		}
 	}
 
-	postsController.$inject = ['postsFactory', '$stateParams'];
-	function postsController(postsFactory, $stateParams){
+// ***********  POSTS CONTROLLER ******************************
+	postsController.$inject = ['postsService', '$stateParams'];
+
+	function postsController(postsService, $stateParams){
 		console.log("postsController is loading");
 		var self = this;
 
-		self.post = postsFactory.posts[$stateParams.id];
-		console.log(postsFactory.posts[$stateParams.id]);
+		postsService.getPosts()
+			.then(function(data){
+				self.post = data[$stateParams.id]
+			})
 
 		self.incrementUpvotes = incrementUpvotes;
 		self.addComment = addComment;
@@ -83,21 +92,44 @@ angular
 		}
 	}
 
-	function postsFactory(){
+
+// ***********  POSTS SERVICE ******************************
+	postsService.$inject = ['$http'];
+
+	function postsService($http){
 		return {
-			posts: [
-				{title: "post1", upvotes: 0, link: "link1", comments: [
-				    {author: 'Joe', body: 'Cool post!', upvotes: 0},
-				    {author: 'Bob', body: 'Great idea but everything is wrong!', upvotes: 0}
-				  ]},
-				{title: "post2", upvotes: 2, link: "link2", comments: []},
-				{title: "post3", upvotes: 3, link: "link3", comments: []},
-				{title: "post4", upvotes: 4, link: "link4", comments: []},
-				{title: "post5", upvotes: 5, link: "link5", comments: []},
-				{title: "post6", upvotes: 8, link: "link6", comments: []},
-				{title: "post7", upvotes: 8, link: "link7", comments: []},
-				{title: "post8", upvotes: 10, link: "link8", comments: []}
-			]	
-		}		
+			getPosts: getPosts,
+			createPost: createPost
+		}
+
+		function getPosts(){
+			return $http.get('/posts.json')
+				.then(getPostsComplete)
+				.catch(getPostsFailed);
+
+				function getPostsComplete(response){
+					console.log(response.data)
+					return response.data
+				}
+
+				function getPostsFailed(error){
+					console.log(error)
+				}
+
+		}
+
+		function createPost(post){
+			return $http.post('/posts.json', post)
+				.then(createPostComplete)
+				.catch(createPostFailed);
+
+				function createPostComplete(response){
+					console.log(response);
+				};
+
+				function createPostFailed(error){
+					console.log(error);
+				}
+		}
 	}
 
