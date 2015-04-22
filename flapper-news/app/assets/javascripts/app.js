@@ -1,6 +1,6 @@
 angular
 	.module("flapperNews", ["ngAnimate", "ui.router"])
-	.service('postsService', postsService)
+	.factory('postsFactory', postsFactory)
 	.controller("MainController", mainController)
 	.controller("PostsController", postsController)
 	.config(routeFunction)
@@ -24,16 +24,16 @@ angular
 	}
 
 // ***********  MAIN CONTROLLER ******************************
-	mainController.$inject = ['postsService'];
+	mainController.$inject = ['postsFactory'];
 
-	function mainController(postsService){
+	function mainController(postsFactory){
 		console.log('mainController is loading');
 		var self = this;
 		self.addPost = addPost;
 		self.incrementUpvotes = incrementUpvotes;
 		self.orderByUpvotes = orderByUpvotes;
 		
-		postsService.getPosts()
+		postsFactory.getPosts()
 			.then(function(data){
 				self.posts = data
 			})
@@ -44,7 +44,7 @@ angular
 				console.log("addingPost")
 				console.log(post)
 				post.upvotes = 0;
-				postsService.createPost(post)
+				postsFactory.createPost(post)
 					.then(function(){
 					self.posts.unshift(post);
 				})
@@ -67,13 +67,13 @@ angular
 	}
 
 // ***********  POSTS CONTROLLER ******************************
-	postsController.$inject = ['postsService', '$stateParams'];
+	postsController.$inject = ['postsFactory', '$stateParams'];
 
-	function postsController(postsService, $stateParams){
+	function postsController(postsFactory, $stateParams){
 		console.log("postsController is loading");
 		var self = this;
 
-		postsService.getPosts()
+		postsFactory.getPosts()
 			.then(function(data){
 				self.post = data[$stateParams.id]
 			})
@@ -93,10 +93,10 @@ angular
 	}
 
 
-// ***********  POSTS SERVICE ******************************
-	postsService.$inject = ['$http'];
+// ***********  POSTS FACTORY  ******************************
+	postsFactory.$inject = ['$http'];
 
-	function postsService($http){
+	function postsFactory($http){
 		return {
 			getPosts: getPosts,
 			createPost: createPost
@@ -115,7 +115,6 @@ angular
 				function getPostsFailed(error){
 					console.log(error)
 				}
-
 		}
 
 		function createPost(post){
