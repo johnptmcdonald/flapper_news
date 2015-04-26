@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
 
   def index
+  	Rails.logger.info session.inspect
     respond_with Post.all
   end
 
